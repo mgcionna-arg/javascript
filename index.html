@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Clásico</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Snake Clásico</h1>
+    <div id="score">Puntuación: 0</div>
+    <div id="game-container">
+        <canvas id="game-board" width="400" height="400"></canvas>
+        <div id="game-over">
+            <h2>Game Over</h2>
+            <p id="final-score">Tu puntuación: 0</p>
+            <button id="restart-btn">Jugar de nuevo</button>
+        </div>
+    </div>
+    <div id="instructions">
+        Usa las flechas del teclado para mover la serpiente. 
+        Come la comida (cuadro rojo) para crecer y sumar puntos. 
+        ¡Evita chocar contra las paredes y contra ti mismo!
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
