@@ -1,10 +1,18 @@
 // Variables del juego
 const canvas = document.getElementById('game-board');
 const ctx = canvas.getContext('2d');
-const scoreDisplay = document.getElementById('score');
+const scoreDisplay = document.getElementById('current-score');
 const finalScoreDisplay = document.getElementById('final-score');
 const gameOverDisplay = document.getElementById('game-over');
 const restartBtn = document.getElementById('restart-btn');
+
+// Nuevos elementos del DOM
+const saveScoreBtn = document.getElementById('save-score-btn');
+const viewScoresBtn = document.getElementById('view-scores-btn');
+const savedScoresPanel = document.getElementById('saved-scores');
+const scoresList = document.getElementById('scores-list');
+const clearScoresBtn = document.getElementById('clear-scores-btn');
+const backToGameBtn = document.getElementById('back-to-game-btn');
 
 const gridSize = 20;
 const tileCount = canvas.width / gridSize;
@@ -14,9 +22,75 @@ let food = {};
 let dx = 0;
 let dy = 0;
 let score = 0;
-let gameSpeed = 100; // milisegundos
+let gameSpeed = 100;
 let gameRunning = false;
 let gameInterval;
+
+// Array para almacenar puntuaciones
+let savedScores = [];
+
+// Cargar puntuaciones guardadas al iniciar
+function loadSavedScores() {
+    const storedScores = localStorage.getItem('snakeScores');
+    if (storedScores) {
+        savedScores = JSON.parse(storedScores);
+    }
+}
+
+// Guardar puntuaciones en localStorage
+function saveScoresToStorage() {
+    localStorage.setItem('snakeScores', JSON.stringify(savedScores));
+}
+
+// Guardar la puntuación actual
+function saveCurrentScore() {
+    if (score === 0) {
+        alert("¡No puedes guardar una puntuación de 0!");
+        return;
+    }
+    
+    const playerName = prompt("Ingresa tu nombre para guardar la puntuación:", "Jugador");
+    
+    if (playerName) {
+        const scoreData = {
+            name: playerName,
+            score: score,
+            date: new Date().toLocaleDateString()
+        };
+        
+        savedScores.push(scoreData);
+        saveScoresToStorage();
+        alert(`¡Puntuación de ${score} guardada para ${playerName}!`);
+    }
+}
+
+// Mostrar puntuaciones guardadas
+function displaySavedScores() {
+    scoresList.innerHTML = '';
+    
+    if (savedScores.length === 0) {
+        scoresList.innerHTML = '<li>No hay puntuaciones guardadas</li>';
+        return;
+    }
+    
+    // Ordenar por puntuación descendente
+    savedScores.sort((a, b) => b.score - a.score);
+    
+    savedScores.forEach((scoreData, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${scoreData.name}: ${scoreData.score} puntos (${scoreData.date})`;
+        scoresList.appendChild(li);
+    });
+}
+
+// Limpiar todas las puntuaciones
+function clearAllScores() {
+    if (confirm("¿Estás seguro de que quieres borrar todas las puntuaciones guardadas?")) {
+        savedScores = [];
+        saveScoresToStorage();
+        displaySavedScores();
+    }
+}
 
 // Inicializar el juego
 function initGame() {
@@ -34,6 +108,7 @@ function initGame() {
     scoreDisplay.textContent = `Puntuación: ${score}`;
     
     gameOverDisplay.style.display = 'none';
+    savedScoresPanel.style.display = 'none';
     gameRunning = true;
     
     if (gameInterval) clearInterval(gameInterval);
@@ -181,5 +256,25 @@ document.addEventListener('keydown', (e) => {
 // Reiniciar el juego al hacer clic en el botón
 restartBtn.addEventListener('click', initGame);
 
+// Guardar puntuación actual
+saveScoreBtn.addEventListener('click', saveCurrentScore);
+
+// Ver puntuaciones guardadas
+viewScoresBtn.addEventListener('click', () => {
+    displaySavedScores();
+    savedScoresPanel.style.display = 'block';
+});
+
+// Limpiar todas las puntuaciones
+clearScoresBtn.addEventListener('click', clearAllScores);
+
+// Volver al juego
+backToGameBtn.addEventListener('click', () => {
+    savedScoresPanel.style.display = 'none';
+});
+
 // Iniciar el juego al cargar la página
-window.onload = initGame;
+window.onload = function() {
+    loadSavedScores();
+    initGame();
+};

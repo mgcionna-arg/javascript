@@ -3,12 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Clásico</title>
+    <title>Snake Clásico - Con Sistema de Puntuaciones</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <h1>Snake Clásico</h1>
-    <div id="score">Puntuación: 0</div>
+    
+    <!-- Panel de puntuaciones guardadas -->
+    <div id="score-panel">
+        <div id="current-score">Puntuación: 0</div>
+        <button id="save-score-btn">Guardar Puntuación</button>
+        <button id="view-scores-btn">Ver Puntuaciones Guardadas</button>
+    </div>
+    
     <div id="game-container">
         <canvas id="game-board" width="400" height="400"></canvas>
         <div id="game-over">
@@ -17,6 +24,15 @@
             <button id="restart-btn">Jugar de nuevo</button>
         </div>
     </div>
+    
+    <!-- Lista de puntuaciones guardadas -->
+    <div id="saved-scores" style="display: none;">
+        <h3>Puntuaciones Guardadas</h3>
+        <ul id="scores-list"></ul>
+        <button id="clear-scores-btn">Borrar Todas las Puntuaciones</button>
+        <button id="back-to-game-btn">Volver al Juego</button>
+    </div>
+    
     <div id="instructions">
         Usa las flechas del teclado para mover la serpiente. 
         Come la comida (cuadro rojo) para crecer y sumar puntos. 
